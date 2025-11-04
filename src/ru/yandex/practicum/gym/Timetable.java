@@ -7,7 +7,7 @@ public class Timetable {
     private HashMap<DayOfWeek, TreeMap<TimeOfDay, HashSet<TrainingSession>>> timetable = new HashMap<>();
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
-        if (trainingSession == null ) {
+        if (trainingSession == null) {
             return;
         }
 
