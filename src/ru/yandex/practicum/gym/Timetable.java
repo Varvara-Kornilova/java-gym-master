@@ -13,9 +13,11 @@ public class Timetable {
 
         DayOfWeek day = trainingSession.getDayOfWeek();
         TimeOfDay time = trainingSession.getTimeOfDay();
-        Coach coach = trainingSession.getCoach();
-
         TreeMap<TimeOfDay, List<TrainingSession>> daySchedule = timetable.get(day);
+
+        if (!TrainingSessionValidator.canAddTrainingSession(trainingSession, daySchedule)) {
+            return;
+        }
 
         if (daySchedule == null) {
             daySchedule = new TreeMap<>();
@@ -31,18 +33,6 @@ public class Timetable {
 
         if (sessionsAtTime.contains(trainingSession)) {
             return;
-        }
-
-        for (TrainingSession existingSession : sessionsAtTime) {
-            if (existingSession.getGroup().equals(trainingSession.getGroup())) {
-                return;
-            }
-        }
-
-        for (TrainingSession existingSession : sessionsAtTime) {
-            if (existingSession.getCoach().equals(coach)) {
-                return;
-            }
         }
 
         sessionsAtTime.add(trainingSession);

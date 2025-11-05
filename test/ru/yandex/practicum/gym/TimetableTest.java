@@ -270,4 +270,21 @@ public class TimetableTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    public void testValidatorConflictingCoach() {
+        Group group1 = new Group("Группа1", Age.ADULT, 60);
+        Group group2 = new Group("Группа2", Age.ADULT, 60);
+        Coach coach = new Coach("Иванов", "Александр", "Степанович");
+
+        TrainingSession session1 = new TrainingSession(group1, coach, DayOfWeek.MONDAY,
+                new TimeOfDay(10, 0));
+        TrainingSession session2 = new TrainingSession(group2, coach, DayOfWeek.MONDAY,
+                new TimeOfDay(10, 30));
+
+        TreeMap<TimeOfDay, List<TrainingSession>> schedule = new TreeMap<>();
+        schedule.put(session1.getTimeOfDay(), new ArrayList<>(List.of(session1)));
+
+        assertFalse(TrainingSessionValidator.canAddTrainingSession(session2, schedule));
+    }
 }
