@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Timetable {
 
-    private HashMap<DayOfWeek, TreeMap<TimeOfDay, HashSet<TrainingSession>>> timetable = new HashMap<>();
+    private HashMap<DayOfWeek, TreeMap<TimeOfDay, List<TrainingSession>>> timetable = new HashMap<>();
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
         if (trainingSession == null) {
@@ -15,17 +15,17 @@ public class Timetable {
         TimeOfDay time = trainingSession.getTimeOfDay();
         Coach coach = trainingSession.getCoach();
 
-        TreeMap<TimeOfDay, HashSet<TrainingSession>> daySchedule = timetable.get(day);
+        TreeMap<TimeOfDay, List<TrainingSession>> daySchedule = timetable.get(day);
 
         if (daySchedule == null) {
             daySchedule = new TreeMap<>();
             timetable.put(day, daySchedule);
         }
 
-        HashSet<TrainingSession> sessionsAtTime = daySchedule.get(time);
+        List<TrainingSession> sessionsAtTime = daySchedule.get(time);
 
         if (sessionsAtTime == null) {
-            sessionsAtTime = new HashSet<>();
+            sessionsAtTime = new ArrayList<>();
             daySchedule.put(time, sessionsAtTime);
         }
 
@@ -48,30 +48,24 @@ public class Timetable {
         sessionsAtTime.add(trainingSession);
     }
 
-    public List<TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
-        TreeMap<TimeOfDay, HashSet<TrainingSession>> daySchedule = timetable.get(dayOfWeek);
+    public TreeMap<TimeOfDay, List<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
+        TreeMap<TimeOfDay, List<TrainingSession>> daySchedule = timetable.get(dayOfWeek);
 
         if (daySchedule == null || daySchedule.isEmpty()) {
-            return List.of();
+            return new TreeMap<>();
         }
 
-        List<TrainingSession> result = new ArrayList<>();
-
-        for (HashSet<TrainingSession> sessions : daySchedule.values()) {
-            result.addAll(sessions);
-        }
-
-        return result;
+        return new TreeMap<>(daySchedule);
     }
 
     public List<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
-        TreeMap<TimeOfDay, HashSet<TrainingSession>> daySchedule = timetable.get(dayOfWeek);
+        TreeMap<TimeOfDay, List<TrainingSession>> daySchedule = timetable.get(dayOfWeek);
 
         if (daySchedule == null) {
             return List.of();
         }
 
-        HashSet<TrainingSession> sessions = daySchedule.get(timeOfDay);
+        List<TrainingSession> sessions = daySchedule.get(timeOfDay);
 
         if (sessions == null) {
             return List.of();
@@ -83,8 +77,8 @@ public class Timetable {
     public List<CounterOfTrainings> getCountByCoaches() {
         Map<Coach, Integer> coachCountMap = new HashMap<>();
 
-        for (TreeMap<TimeOfDay, HashSet<TrainingSession>> daySchedule : timetable.values()) {
-            for (HashSet<TrainingSession> sessionsAtTime : daySchedule.values()) {
+        for (TreeMap<TimeOfDay, List<TrainingSession>> daySchedule : timetable.values()) {
+            for (List<TrainingSession> sessionsAtTime : daySchedule.values()) {
                 for (TrainingSession session : sessionsAtTime) {
                     Coach coach = session.getCoach();
                     coachCountMap.put(coach, coachCountMap.getOrDefault(coach, 0) + 1);
