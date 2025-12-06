@@ -20,6 +20,18 @@ public class TimeOfDay implements Comparable<TimeOfDay> {
         return minutes - o.minutes;
     }
 
+    public int toTotalMinutes() {
+        return hours * 60 + minutes;
+    }
+
+    public int getHours() {
+        return hours;
+    }
+
+    public int getMinutes() {
+        return minutes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -31,13 +43,5 @@ public class TimeOfDay implements Comparable<TimeOfDay> {
     @Override
     public int hashCode() {
         return Objects.hash(hours, minutes);
-    }
-
-    public int getHours() {
-        return hours;
-    }
-
-    public int getMinutes() {
-        return minutes;
     }
 }
